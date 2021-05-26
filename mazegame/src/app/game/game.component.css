@@ -12,7 +12,12 @@
   height: 500px;
 }
 
-.game {
+.screen {
   border: 1px solid black;
   margin: 20px;
 }
+
+/* .assets{
+  display:none;
+} */
+

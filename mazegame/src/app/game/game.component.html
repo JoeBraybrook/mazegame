@@ -1,21 +1,25 @@
 <div class="grid-container flex">
   <h1 class="mat-h1">Maze Game</h1>
   <div class="row controls-section">
-    <button mat-raised-button color="primary">START</button>
-    <button mat-raised-button color="accent">RESET</button>
-    <button mat-raised-button color="warn">SHARE</button>
+    <button *ngIf="!gameStart" mat-raised-button color="primary" (click)="newGame()">START</button>
+    <button *ngIf="gameStart" mat-raised-button color="accent">RESET</button>
+    <button *ngIf="gameStart && gameOver" mat-raised-button color="warn">SHARE</button>
 
   </div>
   <div class="row game-section">
+    <div class="assets">
+      <img #blastoise id="blastoise" src="../../assets/sprites/blastoise.png" alt="blastoise">
+      <img #charizard id="charizard" src="../../assets/sprites/charizard.png" alt="charizard">
+      <img #eternatus id="eternatus" src="../../assets/sprites/eternatus.png" alt="eternatus">
+      <img #playerLeft id="playerLeft" src="../../assets/sprites/meowth-left.gif" alt="player">
+      <img #playerRight id="playerRight" src="../../assets/sprites/meowth-right.gif" alt="player">
+    </div>
 
-    <img #enemy class="enemy" src="../../assets/sprites/blastoise.png" alt="blastoise">
-    <img #enemy class="enemy" src="../../assets/sprites/charizard.png" alt="charizard">
-    <img #enemy class="enemy" src="../../assets/sprites/eternatus.png" alt="eternatus">
-    <img #player class="player" src="../../assets/sprites/meowth.gif" alt="player">
+    <div class="grid">
+      <canvas #screen class="screen" id="screen">
 
-    <canvas #game class="game" id="game">
-
-    </canvas>
+      </canvas>
+    </div>
 
 
   </div>

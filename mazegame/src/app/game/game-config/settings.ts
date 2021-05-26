@@ -1,8 +1,5 @@
-export const XBLOCKS = 50;
-export const YBLOCKS = 50;
-export const BLOCK_SIZE = 10;
-export const DUNGEON_ONE = {
+export const XBLOCKS = 25;
+export const YBLOCKS = 25;
+export const BLOCK_SIZE = 25;
 
 
-
-}
