@@ -1,24 +1,35 @@
 <div class="grid-container flex">
   <h1 class="mat-h1">Maze Game</h1>
   <div class="row controls-section">
-    <button *ngIf="!gameStart" mat-raised-button color="primary" (click)="newGame()">START</button>
-    <button *ngIf="gameStart" mat-raised-button color="accent">RESET</button>
+    <button *ngIf="!gameStart" mat-raised-button color="primary" (click)="play()">START</button>
+    <button *ngIf="gameStart" mat-raised-button color="accent" (click)="newGame()">RESET</button>
     <button *ngIf="gameStart && gameOver" mat-raised-button color="warn">SHARE</button>
 
   </div>
   <div class="row game-section">
+    <div class="stats">
+
+      <p class="playerY">Dungeon {{this.dungeon}}</p>
+      
+
+    </div>
     <div class="assets">
       <img #blastoise id="blastoise" src="../../assets/sprites/blastoise.png" alt="blastoise">
       <img #charizard id="charizard" src="../../assets/sprites/charizard.png" alt="charizard">
       <img #eternatus id="eternatus" src="../../assets/sprites/eternatus.png" alt="eternatus">
+      <img #door id="door" src="../../assets/sprites/door.png" alt="door">
       <img #playerLeft id="playerLeft" src="../../assets/sprites/meowth-left.gif" alt="player">
       <img #playerRight id="playerRight" src="../../assets/sprites/meowth-right.gif" alt="player">
+
     </div>
+
 
     <div class="grid">
       <canvas #screen class="screen" id="screen">
 
       </canvas>
+
+
     </div>
 
 
