@@ -41,6 +41,14 @@ export class GameComponent {
       event.preventDefault();
       this.moves[event.key](this.screen);
       this._keepInside();
+      console.log(this.dungeon);
+      console.log(this.screen.playerX);
+      console.log(this.screen.playerY);
+      this._doorCollisionCheck(
+        this.dungeon,
+        this.screen.playerX,
+        this.screen.playerY
+      );
       // this._checkEnemyInteraction();
 
       this._ctx.clearRect(
@@ -51,24 +59,23 @@ export class GameComponent {
       );
       this.screen.drawScreen(this.dungeon);
 
-      const interaction = this.screen.drawPlayer(this.dungeon, event.key);
+      // const interaction = this.screen.drawPlayer(this.dungeon, event.key);
 
-      // Determine what to do with the collision results
-      if (interaction) {
-        // If first result sent back from collision is a string, update the info sent to interface
-        if (typeof interaction[0] === 'string') {
-          this.message = interaction[0];
-        }
+      // // Determine what to do with the collision results
+      // if (interaction) {
+      //   // If first result sent back from collision is a string, update the info sent to interface
+      //   if (typeof interaction[0] === 'string') {
+      //     this.message = interaction[0];
+      //   }
 
-        // Finally, clear the canvas and draw the new canvas after collisions have been added
-        this._ctx.clearRect(
-          0,
-          0,
-          this._ctx.canvas.width,
-          this._ctx.canvas.height
-        );
-        this.screen.drawScreen(this.dungeon);
-      }
+      //   // Finally, clear the canvas and draw the new canvas after collisions have been added
+      //   this._ctx.clearRect(
+      //     0,
+      //     0,
+      //     this._ctx.canvas.width,
+      //     this._ctx.canvas.height
+      //   );
+      // this.screen.drawScreen(this.dungeon);
     }
   }
 
@@ -125,6 +132,110 @@ export class GameComponent {
     this.screen.playerY = Math.min(575, this.screen.playerY);
   }
 
+  private _doorCollisionCheck(
+    dungeon: number,
+    playerX: number,
+    playerY: number
+  ): number {
+    if (dungeon === 1 && playerX === 290 && playerY === -10) {
+      this.dungeon = 2;
+      this.screen.playerX = 290;
+      this.screen.playerY = 575;
+    }
+    if (dungeon === 1 && playerX === -5 && playerY === 275) {
+      this.dungeon = 2;
+      this.screen.playerX = 580;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 1 && playerX === 580 && playerY === 275) {
+      this.dungeon = 2;
+      this.screen.playerX = -5;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 2 && playerX === 290 && playerY === -10) {
+      this.dungeon = 3;
+      this.screen.playerX = 290;
+      this.screen.playerY = 575;
+    }
+    if (dungeon === 2 && playerX === -5 && playerY === 275) {
+      this.dungeon = 3;
+      this.screen.playerX = 580;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 2 && playerX === 580 && playerY === 275) {
+      this.dungeon = 3;
+      this.screen.playerX = -5;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 2 && playerX === 290 && playerY === 575) {
+      this.dungeon = 1;
+      this.screen.playerX = 290;
+      this.screen.playerY = -10;
+    }
+    if (dungeon === 3 && playerX === 290 && playerY === -10) {
+      this.dungeon = 4;
+      this.screen.playerX = 290;
+      this.screen.playerY = 575;
+    }
+    if (dungeon === 3 && playerX === -5 && playerY === 275) {
+      this.dungeon = 4;
+      this.screen.playerX = 580;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 3 && playerX === 580 && playerY === 275) {
+      this.dungeon = 4;
+      this.screen.playerX = -5;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 3 && playerX === 290 && playerY === 575) {
+      this.dungeon = 2;
+      this.screen.playerX = 290;
+      this.screen.playerY = -10;
+    }
+    if (dungeon === 4 && playerX === 290 && playerY === -10) {
+      this.dungeon = 5;
+      this.screen.playerX = 290;
+      this.screen.playerY = 575;
+    }
+    if (dungeon === 4 && playerX === -5 && playerY === 275) {
+      this.dungeon = 5;
+      this.screen.playerX = 580;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 4 && playerX === 580 && playerY === 275) {
+      this.dungeon = 5;
+      this.screen.playerX = -5;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 4 && playerX === 290 && playerY === 575) {
+      this.dungeon = 3;
+      this.screen.playerX = 290;
+      this.screen.playerY = -10;
+    }
+    if (dungeon === 5 && playerX === 290 && playerY === -10) {
+      this.dungeon = 6;
+      this.screen.playerX = 290;
+      this.screen.playerY = 575;
+    }
+    if (dungeon === 5 && playerX === -5 && playerY === 275) {
+      this.dungeon = 6;
+      this.screen.playerX = 580;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 5 && playerX === 580 && playerY === 275) {
+      this.dungeon = 6;
+      this.screen.playerX = -5;
+      this.screen.playerY = 275;
+    }
+    if (dungeon === 5 && playerX === 290 && playerY === 575) {
+      this.dungeon = 4;
+      this.screen.playerX = 290;
+      this.screen.playerY = -10;
+    }
+
+    return this.dungeon;
+  }
+
   //   private _checkEnemyInteraction(): boolean {
   //     if (this.dungeon <= 3) {
   //       if (
@@ -162,54 +273,74 @@ export class Screen implements IScreen {
       this._ctx.beginPath();
       this._ctx.fillStyle = '#79B9F8';
       this._ctx.fillRect(0, 0, 650, 650);
-      if (this.playerX > this.playerX - 1) {
-        this.drawPlayer(1, 'ArrowRight');
-      }
-      if (this.playerX < this.playerX - 1) {
-        this.drawPlayer(1, 'ArrowLeft');
-      }
+
+      this.drawPlayer(1, 'ArrowLeft');
+
       this.drawBlastoise();
       this.drawDoorNorth();
       this.drawDoorLeft();
       this.drawDoorRight();
-      if (this.playerX === 290 && this.playerY === -10) {
-        this.drawScreen(2);
-      }
-      if (this.playerX === -5 && this.playerY === 275) {
-        this.drawScreen(3);
-      }
+      // if (dungeon === 1 && this.playerX === 290 && this.playerY === -10) {
+      //   dungeon = 2
+      //   this.drawScreen(2);
+      // }
+      // if (this.playerX === -5 && this.playerY === 275) {
+      //   this.drawScreen(3);
+      // }
     }
     if (dungeon === 2) {
       this._ctx.beginPath();
       this._ctx.fillStyle = '#F86035';
       this._ctx.fillRect(0, 0, 650, 650);
-      if (this.playerX > this.playerX - 1) {
-        this.drawPlayer(2, 'ArrowRight');
-      }
-      if (this.playerX < this.playerX - 1) {
-        this.drawPlayer(2, 'ArrowLeft');
-      }
+      // if (this.playerX > this.playerX - 1) {
+      //   this.drawPlayer(2, 'ArrowRight');
+      // }
+      // if (this.playerX < this.playerX - 1) {
+      //   this.drawPlayer(2, 'ArrowLeft');
+      // }
+      this.drawPlayer(2, 'ArrowLeft');
       this.drawCharizard();
+      this.drawDoorSouth();
       this.drawDoorNorth();
       this.drawDoorLeft();
       this.drawDoorRight();
-      if (this.playerX === 290 && this.playerY === -10) {
-        this.drawScreen(3);
-      }
+
+      // if (this.playerX === 290 && this.playerY === -10) {
+
+      //   this.drawScreen(3);
+      // }
     }
 
     if (dungeon === 3) {
       this._ctx.beginPath();
       this._ctx.fillStyle = '#535EA7';
       this._ctx.fillRect(0, 0, 650, 650);
-      if (this.playerX > this.playerX - 1) {
-        this.drawPlayer(3, 'ArrowRight');
-      }
-      if (this.playerX < this.playerX - 1) {
-        this.drawPlayer(3, 'ArrowLeft');
-      }
+      this.drawPlayer(3, 'ArrowLeft');
+      // this.drawVenasaur();
+      this.drawDoorNorth();
+      this.drawDoorSouth();
+      this.drawDoorLeft();
+      this.drawDoorRight();
+    }
+    if (dungeon === 4) {
+      this._ctx.beginPath();
+      this._ctx.fillStyle = '#535EA7';
+      this._ctx.fillRect(0, 0, 650, 650);
+      this.drawPlayer(3, 'ArrowLeft');
       this.drawEternatus();
       this.drawDoorNorth();
+      this.drawDoorSouth();
+      this.drawDoorLeft();
+      this.drawDoorRight();
+    }
+    if (dungeon === 3) {
+      this._ctx.beginPath();
+      this._ctx.fillStyle = '#535EA7';
+      this._ctx.fillRect(0, 0, 650, 650);
+      this.drawPlayer(3, 'ArrowLeft');
+      this.drawEternatus();
+      this.drawDoorNorth();
+      this.drawDoorSouth();
       this.drawDoorLeft();
       this.drawDoorRight();
     }
@@ -256,10 +387,6 @@ export class Screen implements IScreen {
           }
         }
       });
-
-      console.log(this.playerX, 'this.playerX');
-      console.log(this.playerY, 'this.playerY');
-      console.log(key);
     });
 
     // const interaction = this._checkInteraction(dungeon);
@@ -285,6 +412,11 @@ export class Screen implements IScreen {
     const Door = document.getElementById('door') as HTMLCanvasElement;
     this._ctx.drawImage(Door, 290, 0, 50, 50);
   }
+  public drawDoorSouth() {
+    const Door = document.getElementById('door') as HTMLCanvasElement;
+    this._ctx.drawImage(Door, 290, 575, 50, 50);
+  }
+
   public drawDoorLeft() {
     const Door = document.getElementById('door') as HTMLCanvasElement;
     this._ctx.drawImage(Door, 0, 280, 50, 50);
@@ -328,39 +460,39 @@ export class Screen implements IScreen {
     this._createPlayer();
   }
 
-  private _createBlastoise() {
-    this.blastoiseBoundary = [
-      [0, 0, 0],
-      [0, 2, 0],
-      [0, 0, 0],
-    ];
-  }
+  // private _createBlastoise() {
+  //   this.blastoiseBoundary = [
+  //     [0, 0, 0],
+  //     [0, 2, 0],
+  //     [0, 0, 0],
+  //   ];
+  // }
 
-  private _createCharizard() {
-    this.charizardBoundary = [
-      [0, 0, 0, 0],
-      [0, 2, 2, 0],
-      [0, 2, 2, 0],
-      [0, 0, 0, 0],
-    ];
-  }
-  private _createEternatus() {
-    this.eternatusBoundary = [
-      [0, 0, 0, 0, 0, 0],
-      [0, 2, 2, 2, 2, 0],
-      [0, 2, 2, 2, 2, 0],
-      [0, 2, 2, 2, 2, 0],
-      [0, 2, 2, 2, 2, 0],
-      [0, 0, 0, 0, 0, 0],
-    ];
-  }
+  // private _createCharizard() {
+  //   this.charizardBoundary = [
+  //     [0, 0, 0, 0],
+  //     [0, 2, 2, 0],
+  //     [0, 2, 2, 0],
+  //     [0, 0, 0, 0],
+  //   ];
+  // }
+  // private _createEternatus() {
+  //   this.eternatusBoundary = [
+  //     [0, 0, 0, 0, 0, 0],
+  //     [0, 2, 2, 2, 2, 0],
+  //     [0, 2, 2, 2, 2, 0],
+  //     [0, 2, 2, 2, 2, 0],
+  //     [0, 2, 2, 2, 2, 0],
+  //     [0, 0, 0, 0, 0, 0],
+  //   ];
+  // }
 
-  private _createDoor() {
-    this.playerBoundary = [
-      [2, 2],
-      [2, 2],
-    ];
-  }
+  // private _createDoor() {
+  //   this.playerBoundary = [
+  //     [2, 2],
+  //     [2, 2],
+  //   ];
+  // }
 }
 
 export class KEY {
