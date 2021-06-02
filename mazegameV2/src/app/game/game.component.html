@@ -1,1 +1,35 @@
-<p>game works!</p>
+<div class="grid-container flex">
+
+    <h1>Maze Game</h1>
+    <div class="row controls">
+        <!-- Create New Gane, Reset Button -->
+    <button *ngIf="!gameStart" (click)="newGame()">New Game</button>
+    <button *ngIf="gameStart" (click)="reset()">Reset</button>
+    </div>
+    <div class="row information">
+        <!-- Display Stats, Wealth, Dungeon Number -->
+        <p>Dungeon {{this.dungeon}}</p>
+        <p>Wealth {{this.wealth}}</p>
+    </div>
+    <div class="row game">
+        <div class="assets">
+            <img #playerUpLeft id="playerUpLeft" src="../../assets/sprites/meowth-left.gif">
+            <img #playerUpRight id="playerUpRight" src="../../assets/sprites/meowth-right.gif">
+            <img #playerDownLeft id="playerDownLeft" src="../../assets/sprites/meowth-down-left.gif">
+            <img #playerDownRight id="playerDownRight" src="../../assets/sprites/meowth-down-right.gif">
+            <img #door id="door" src="../../assets/sprites/door.png" alt="door">
+            <img #lava id="lava" src="../../assets/sprites/lava.gif" alt="lava">
+            <img #blastoise id="blastoise" src="../../assets/sprites/blastoise.png" alt="blastoise">
+            <img #charizard id="charizard" src="../../assets/sprites/charizard.png" alt="charizard">
+            <img #eternatus id="eternatus" src="../../assets/sprites/eternatus.png" alt="eternatus">
+            <img #venusaur id="venusaur" src="../../assets/sprites/venusaur.png" alt="venusaur">
+            <img #snorlax id="snorlax" src="../../assets/sprites/snorlax.png" alt="snorlax">
+            <img #coin id="coin" src="../../assets/sprites/coin.png" alt="coin">
+          </div>
+        <canvas #screen class="screen" id="screen">
+
+        </canvas>
+        <!-- Display Screen, camvas to draw dungeons and otgher elements, this will be the game screen -->
+    </div>
+    
+</div>

@@ -1,0 +1,15 @@
+.game {
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  width: 100%;
+  justify-content: center;
+  padding: 15px;
+}
+.screen {
+  border: 1px solid red;
+}
+
+.assets {
+  display: none;
+}
