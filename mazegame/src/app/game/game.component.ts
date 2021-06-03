@@ -22,11 +22,13 @@ export class GameComponent {
   constructor() {}
 
   private _ctx: CanvasRenderingContext2D;
+  // public dungeons[]
   public dungeon: number;
   public message: string;
   public gameStart: boolean = false;
   public gameOver: boolean = false;
   public screen: IScreen;
+  public wealth: number;
 
   @ViewChild('screen', { static: true })
   public set canvas(ele: ElementRef<HTMLCanvasElement>) {
@@ -90,6 +92,7 @@ export class GameComponent {
     delete this.screen;
     this.gameOver = false;
     this.dungeon = 1;
+    this.wealth = 0;
     this.message = `Welcome to pixel hell`;
     this.gameStart = true;
     this.screen = new Screen(this._ctx);

@@ -1,9 +1,15 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { BLOCK_SIZE, XAXIS, YAXIS } from './game-config/settings';
+import * as _ from 'lodash';
 
 export interface IScreen {
   playerX: number;
   playerY: number;
+  removeTopLeft: boolean;
+  removeTopRight: boolean;
+  removeCenter: boolean;
+  removeBottomLeft: boolean;
+  removeBottomRight: boolean;
   drawPlayer: (
     dungeon: number,
     key: string
@@ -27,6 +33,11 @@ export class GameComponent {
   public gameStart: boolean = false;
   public gameOver: boolean = false;
   public screen: IScreen;
+  public removeTopLeft: boolean = false;
+  public removeTopRight: boolean = false;
+  public removeCenter: boolean = false;
+  public removeBottomLeft: boolean = false;
+  public removeBottomRight: boolean = false;
 
   @ViewChild('screen', { static: true })
   public set canvas(ele: ElementRef<HTMLCanvasElement>) {
@@ -46,6 +57,11 @@ export class GameComponent {
       console.log(this.dungeon);
       console.log(this.screen.playerX);
       console.log(this.screen.playerY);
+      this._amuletCollectionCheck(
+        this.dungeon,
+        this.screen.playerX,
+        this.screen.playerY
+      );
       this._doorCollisionCheck(
         this.dungeon,
         this.screen.playerX,
@@ -82,6 +98,35 @@ export class GameComponent {
     this.screen.playerX = Math.min(700, this.screen.playerX);
     this.screen.playerY = Math.max(0, this.screen.playerY);
     this.screen.playerY = Math.min(700, this.screen.playerY);
+  }
+  private _amuletCollectionCheck(
+    dungeon: number,
+    playerX: number,
+    playerY: number
+  ) {
+    if (dungeon === 1 || 2 || 3 || 6 || 8 || 9) {
+      if (playerX === 0 && playerY === 0) {
+        this.screen.removeTopLeft = true;
+        this.wealth += 100;
+      } else if (playerX === 0 && playerY === 700) {
+        this.screen.removeBottomLeft = true;
+        this.wealth += 100;
+      } else if (playerX === 350 && playerY === 350) {
+        this.screen.removeCenter = true;
+        this.wealth += 100;
+      } else if (playerX === 700 && playerY === 0) {
+        this.screen.removeTopRight = true;
+        this.wealth += 100;
+      } else if (playerX === 700 && playerY === 700) {
+        this.screen.removeBottomRight = true;
+        this.wealth += 100;
+      }
+    }
+    // [0, 0],
+    // [0, 700],
+    // [700, 0],
+    // [700, 700],
+    // [350, 350]
   }
 
   private _doorCollisionCheck(
@@ -269,6 +314,7 @@ export class GameComponent {
     // Begin a brand new game
     this.gameStart = true;
     this.dungeon = 1;
+    this.wealth = 0;
     this.screen = new Screen(this._ctx);
     this.screen.drawScreen(this.dungeon);
   }
@@ -291,6 +337,22 @@ export class Screen implements IScreen {
   public playerY: number;
   public playerBoundary: number[][];
   public key: string;
+  public blastoiseKey: boolean = false;
+  public charizardKey: boolean = false;
+  public venusaurKey: boolean = false;
+  // public dungeons= [
+  //   {amulets:[], hasLeftDoor,color:'' }
+
+  // ];
+  public amulets: [number, number][] = [];
+  public coinX: number;
+  public coinY: number;
+  public removeTopLeft: boolean = false;
+  public removeTopRight: boolean = false;
+  public removeCenter: boolean = false;
+  public removeBottomLeft: boolean = false;
+  public removeBottomRight: boolean = false;
+
   constructor(private _ctx: CanvasRenderingContext2D) {
     this._createPlayer();
   }
@@ -304,6 +366,13 @@ export class Screen implements IScreen {
       this.drawDoorNorth();
       this.drawDoorLeft();
       this.drawDoorRight();
+      this.drawCoin(
+        this.removeBottomLeft,
+        this.removeBottomRight,
+        this.removeCenter,
+        this.removeTopLeft,
+        this.removeTopRight
+      );
     }
     if (dungeon === 2) {
       this._ctx.beginPath();
@@ -311,6 +380,13 @@ export class Screen implements IScreen {
       this._ctx.fillRect(0, 0, 750, 750);
       this.drawPlayer(2, this.key);
       this.drawDoorRight();
+      this.drawCoin(
+        this.removeBottomLeft,
+        this.removeBottomRight,
+        this.removeCenter,
+        this.removeTopLeft,
+        this.removeTopRight
+      );
     }
     if (dungeon === 3) {
       this._ctx.beginPath();
@@ -318,7 +394,13 @@ export class Screen implements IScreen {
       this._ctx.fillRect(0, 0, 750, 750);
       this.drawPlayer(3, this.key);
       this.drawDoorLeft();
-      this.drawCoin();
+      this.drawCoin(
+        this.removeBottomLeft,
+        this.removeBottomRight,
+        this.removeCenter,
+        this.removeTopLeft,
+        this.removeTopRight
+      );
     }
     if (dungeon === 4) {
       this._ctx.beginPath();
@@ -351,6 +433,13 @@ export class Screen implements IScreen {
       this._ctx.fillRect(0, 0, 750, 750);
       this.drawPlayer(6, this.key);
       this.drawDoorLeft();
+      this.drawCoin(
+        this.removeBottomLeft,
+        this.removeBottomRight,
+        this.removeCenter,
+        this.removeTopLeft,
+        this.removeTopRight
+      );
     }
 
     if (dungeon === 7) {
@@ -377,6 +466,13 @@ export class Screen implements IScreen {
       this._ctx.fillRect(0, 0, 750, 750);
       this.drawPlayer(9, this.key);
       this.drawDoorLeft();
+      this.drawCoin(
+        this.removeBottomLeft,
+        this.removeBottomRight,
+        this.removeCenter,
+        this.removeTopLeft,
+        this.removeTopRight
+      );
     }
 
     if (dungeon === 10) {
@@ -526,9 +622,43 @@ export class Screen implements IScreen {
     this._ctx.drawImage(Snorlax, 250, 50, 250, 250);
     this._ctx.drawImage(Snorlax, 500, 50, 250, 250);
   }
-  public drawCoin() {
+  public drawCoin(
+    removeBottomLeft: boolean,
+    removeBottomRight: boolean,
+    removeCenter: boolean,
+    removeTopLeft: boolean,
+    removeTopRight: boolean
+  ) {
+    this.amulets = [
+      [0, 0],
+      [0, 700],
+      [700, 0],
+      [700, 700],
+      [350, 350],
+    ];
+
+    console.log(this.amulets);
+    if (removeTopLeft === true) {
+      _.remove(this.amulets, (o) => o[0] === 0 && o[1] === 0);
+    }
+    if (removeBottomLeft === true) {
+      _.remove(this.amulets, [0, 700]);
+    }
+    if (removeCenter === true) {
+      _.remove(this.amulets, [350, 350]);
+    }
+    if (removeTopRight === true) {
+      _.remove(this.amulets, [700, 0]);
+    }
+    if (removeBottomRight === true) {
+      _.remove(this.amulets, [700, 700]);
+    }
+
     const Coin = document.getElementById('coin') as HTMLCanvasElement;
-    this._ctx.drawImage(Coin, 350, 350, 50, 50);
+    this.amulets.forEach((each) => {
+      const [x, y] = each;
+      this._ctx.drawImage(Coin, x, y, 50, 50);
+    });
   }
 }
 
