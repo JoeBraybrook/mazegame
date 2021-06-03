@@ -1,5 +1,11 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { BLOCK_SIZE, XAXIS, YAXIS } from './game-config/settings';
+import {
+  BLOCK_SIZE,
+  XAXIS,
+  YAXIS,
+  DUNGEONS,
+  ENEMIES,
+} from './game-config/settings';
 import * as _ from 'lodash';
 
 export interface IScreen {
@@ -10,11 +16,9 @@ export interface IScreen {
   removeCenter: boolean;
   removeBottomLeft: boolean;
   removeBottomRight: boolean;
-  drawPlayer: (
-    dungeon: number,
-    key: string
-  ) => [message: string, dungeon: number];
+  drawPlayer: () => [message: string];
   drawScreen: (dungeon: number) => void;
+
   key: string;
 }
 
@@ -104,7 +108,7 @@ export class GameComponent {
     playerX: number,
     playerY: number
   ) {
-    if (dungeon === 1 || 2 || 3 || 6 || 8 || 9) {
+    if (DUNGEONS[dungeon].hasCoins) {
       if (playerX === 0 && playerY === 0) {
         this.screen.removeTopLeft = true;
         this.wealth += 100;
@@ -122,11 +126,6 @@ export class GameComponent {
         this.wealth += 100;
       }
     }
-    // [0, 0],
-    // [0, 700],
-    // [700, 0],
-    // [700, 700],
-    // [350, 350]
   }
 
   private _doorCollisionCheck(
@@ -135,171 +134,49 @@ export class GameComponent {
     playerY: number
   ): number {
     // North door
-    if (dungeon === 1 && playerX === 350 && playerY === 0) {
-      this.dungeon = 4;
+    if (
+      DUNGEONS[dungeon].doors.hasNorthDoor &&
+      playerX === 350 &&
+      playerY === 0
+    ) {
+      this.dungeon = DUNGEONS[dungeon].passages.northDungeon;
       this.screen.playerX = 350;
       this.screen.playerY = 650;
+      this._cleanSlateCoins();
     }
-    // Left Door
-    if (dungeon === 1 && playerX === 0 && playerY === 350) {
-      this.dungeon = 2;
+    // West Door
+    if (
+      DUNGEONS[dungeon].doors.hasWestDoor &&
+      playerX === 0 &&
+      playerY === 350
+    ) {
+      this.dungeon = DUNGEONS[dungeon].passages.westDungeon;
       this.screen.playerX = 650;
       this.screen.playerY = 350;
+      this._cleanSlateCoins();
     }
-    // Right Door
-    if (dungeon === 1 && playerX === 700 && playerY === 350) {
-      this.dungeon = 3;
+    // East Door
+    if (
+      DUNGEONS[dungeon].doors.hasEastDoor &&
+      playerX === 700 &&
+      playerY === 350
+    ) {
+      this.dungeon = DUNGEONS[dungeon].passages.eastDungeon;
       this.screen.playerX = 50;
       this.screen.playerY = 350;
-    }
-    // Dungeon 2
-    // Right Door
-    if (dungeon === 2 && playerX === 700 && playerY === 350) {
-      this.dungeon = 1;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 3
-    // Left Door
-    if (dungeon === 3 && playerX === 0 && playerY === 350) {
-      this.dungeon = 1;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 4
-    if (dungeon === 4 && playerX === 350 && playerY === 0) {
-      this.dungeon = 7;
-      this.screen.playerX = 350;
-      this.screen.playerY = 650;
-    }
-    // Left Door
-    if (dungeon === 4 && playerX === 0 && playerY === 350) {
-      this.dungeon = 5;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-    // Right Door
-    if (dungeon === 4 && playerX === 700 && playerY === 350) {
-      this.dungeon = 6;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
+      this._cleanSlateCoins();
     }
     // South Door
-    if (dungeon === 4 && playerX === 350 && playerY === 700) {
-      this.dungeon = 1;
+    if (
+      DUNGEONS[dungeon].doors.hasSouthDoor &&
+      playerX === 350 &&
+      playerY === 700
+    ) {
+      this.dungeon = DUNGEONS[dungeon].passages.southDungeon;
       this.screen.playerX = 350;
       this.screen.playerY = 50;
+      this._cleanSlateCoins();
     }
-
-    // Dungeon 5
-    // Right Door
-    if (dungeon === 5 && playerX === 700 && playerY === 350) {
-      this.dungeon = 4;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 6
-    // Left Door
-    if (dungeon === 6 && playerX === 0 && playerY === 350) {
-      this.dungeon = 4;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 7
-    //North Door
-    if (dungeon === 7 && playerX === 350 && playerY === 0) {
-      this.dungeon = 10;
-      this.screen.playerX = 350;
-      this.screen.playerY = 650;
-    }
-    // Left Door
-    if (dungeon === 7 && playerX === 0 && playerY === 350) {
-      this.dungeon = 8;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-    // Right Door
-    if (dungeon === 7 && playerX === 700 && playerY === 350) {
-      this.dungeon = 9;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
-    }
-    // South Door
-    if (dungeon === 7 && playerX === 350 && playerY === 700) {
-      this.dungeon = 4;
-      this.screen.playerX = 350;
-      this.screen.playerY = 50;
-    }
-
-    // Dungeon 8
-    // Right Door
-    if (dungeon === 8 && playerX === 700 && playerY === 350) {
-      this.dungeon = 7;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 9
-    // Left Door
-    if (dungeon === 9 && playerX === 0 && playerY === 350) {
-      this.dungeon = 7;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 10
-    //North Door
-    if (dungeon === 10 && playerX === 350 && playerY === 0) {
-      this.dungeon = 13;
-      this.screen.playerX = 350;
-      this.screen.playerY = 650;
-    }
-    // Left Door
-    if (dungeon === 10 && playerX === 0 && playerY === 350) {
-      this.dungeon = 11;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-    // Right Door
-    if (dungeon === 10 && playerX === 700 && playerY === 350) {
-      this.dungeon = 12;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
-    }
-    // South Door
-    if (dungeon === 10 && playerX === 350 && playerY === 700) {
-      this.dungeon = 7;
-      this.screen.playerX = 350;
-      this.screen.playerY = 50;
-    }
-
-    // Dungeon 8
-    // Right Door
-    if (dungeon === 11 && playerX === 700 && playerY === 350) {
-      this.dungeon = 10;
-      this.screen.playerX = 50;
-      this.screen.playerY = 350;
-    }
-
-    // Dungeon 9
-    // Left Door
-    if (dungeon === 12 && playerX === 0 && playerY === 350) {
-      this.dungeon = 10;
-      this.screen.playerX = 650;
-      this.screen.playerY = 350;
-    }
-    // Dungeon 9
-    // South Door
-    if (dungeon === 13 && playerX === 350 && playerY === 700) {
-      this.dungeon = 10;
-      this.screen.playerX = 350;
-      this.screen.playerY = 50;
-    }
-
     return this.dungeon;
   }
 
@@ -310,10 +187,18 @@ export class GameComponent {
     this._ctx.canvas.width = XAXIS * BLOCK_SIZE;
   }
 
+  private _cleanSlateCoins() {
+    this.screen.removeTopLeft = false;
+    this.screen.removeTopRight = false;
+    this.screen.removeCenter = false;
+    this.screen.removeBottomLeft = false;
+    this.screen.removeBottomRight = false;
+  }
+
   public newGame(): void {
     // Begin a brand new game
     this.gameStart = true;
-    this.dungeon = 1;
+    this.dungeon = 0;
     this.wealth = 0;
     this.screen = new Screen(this._ctx);
     this.screen.drawScreen(this.dungeon);
@@ -340,10 +225,6 @@ export class Screen implements IScreen {
   public blastoiseKey: boolean = false;
   public charizardKey: boolean = false;
   public venusaurKey: boolean = false;
-  // public dungeons= [
-  //   {amulets:[], hasLeftDoor,color:'' }
-
-  // ];
   public amulets: [number, number][] = [];
   public coinX: number;
   public coinY: number;
@@ -358,159 +239,48 @@ export class Screen implements IScreen {
   }
 
   public drawScreen(dungeon: number): void {
-    if (dungeon === 1) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#1abc9c';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(1, this.key);
+    this._ctx.beginPath();
+    this._ctx.fillStyle = DUNGEONS[dungeon].background;
+    this._ctx.fillRect(0, 0, 750, 750);
+    if (DUNGEONS[dungeon].doors.hasNorthDoor) {
       this.drawDoorNorth();
-      this.drawDoorLeft();
-      this.drawDoorRight();
-      this.drawCoin(
-        this.removeBottomLeft,
-        this.removeBottomRight,
-        this.removeCenter,
-        this.removeTopLeft,
-        this.removeTopRight
-      );
     }
-    if (dungeon === 2) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#f1c40f';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(2, this.key);
-      this.drawDoorRight();
-      this.drawCoin(
-        this.removeBottomLeft,
-        this.removeBottomRight,
-        this.removeCenter,
-        this.removeTopLeft,
-        this.removeTopRight
-      );
-    }
-    if (dungeon === 3) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#2ecc71';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(3, this.key);
-      this.drawDoorLeft();
-      this.drawCoin(
-        this.removeBottomLeft,
-        this.removeBottomRight,
-        this.removeCenter,
-        this.removeTopLeft,
-        this.removeTopRight
-      );
-    }
-    if (dungeon === 4) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#e67e22';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(4, this.key);
-      this.drawDoorNorth();
-      this.drawDoorLeft();
-      this.drawDoorRight();
-      this.drawDoorSouth();
-      this.drawSnorlax();
-    }
-    if (dungeon === 5) {
-      this._ctx.beginPath();
-      var lava = new Image(50, 50);
-
-      lava.src =
-        'https://forum.gdevelop-app.com/uploads/default/original/2X/e/e6ee4168ca0463917e3651bd4bb7a0e090636d32.gif';
-
-      var ptrn = this._ctx.createPattern(lava, 'repeat');
-      this._ctx.fillStyle = ptrn;
-
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(5, this.key);
-      this.drawDoorRight();
-    }
-    if (dungeon === 6) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#e74c3c';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(6, this.key);
-      this.drawDoorLeft();
-      this.drawCoin(
-        this.removeBottomLeft,
-        this.removeBottomRight,
-        this.removeCenter,
-        this.removeTopLeft,
-        this.removeTopRight
-      );
-    }
-
-    if (dungeon === 7) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#9b59b6';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(7, this.key);
-      this.drawDoorNorth();
-      this.drawDoorLeft();
-      this.drawDoorRight();
-      this.drawDoorSouth();
-      this.drawEternatus();
-    }
-    if (dungeon === 8) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#ecf0f1';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(8, this.key);
-      this.drawDoorRight();
-    }
-    if (dungeon === 9) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#34495e';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(9, this.key);
-      this.drawDoorLeft();
-      this.drawCoin(
-        this.removeBottomLeft,
-        this.removeBottomRight,
-        this.removeCenter,
-        this.removeTopLeft,
-        this.removeTopRight
-      );
-    }
-
-    if (dungeon === 10) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#F79F1F';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(10, this.key);
-      this.drawDoorNorth();
-      this.drawDoorLeft();
-      this.drawDoorRight();
+    if (DUNGEONS[dungeon].doors.hasSouthDoor) {
       this.drawDoorSouth();
     }
-    if (dungeon === 11) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#0652DD';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(11, this.key);
-      this.drawDoorRight();
+    if (DUNGEONS[dungeon].doors.hasEastDoor) {
+      this.drawDoorEast();
+    }
+    if (DUNGEONS[dungeon].doors.hasWestDoor) {
+      this.drawDoorWest();
+    }
+    if (DUNGEONS[dungeon].hasCoins) {
+      this.drawCoin(
+        dungeon,
+        this.removeBottomLeft,
+        this.removeBottomRight,
+        this.removeCenter,
+        this.removeTopLeft,
+        this.removeTopRight
+      );
+    }
+    if (DUNGEONS[dungeon].threats.hasBlastoise) {
       this.drawBlastoise();
     }
-    if (dungeon === 12) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#EA2027';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(12, this.key);
-      this.drawDoorLeft();
+    if (DUNGEONS[dungeon].threats.hasCharizard) {
       this.drawCharizard();
     }
-    if (dungeon === 13) {
-      this._ctx.beginPath();
-      this._ctx.fillStyle = '#009432';
-      this._ctx.fillRect(0, 0, 750, 750);
-      this.drawPlayer(13, this.key);
-      this.drawDoorSouth();
+    if (DUNGEONS[dungeon].threats.hasVenusaur) {
       this.drawVenusaur();
     }
+    if (DUNGEONS[dungeon].threats.hasEternatus) {
+      this.drawEternatus();
+    }
+    if (DUNGEONS[dungeon].threats.hasSnorlax) {
+      this.drawSnorlax();
+    }
+    this.drawPlayer();
   }
-  // Here wew define the parameters and actions for each room in an if statement separated by the dungeons number
 
   private _createPlayer() {
     this.playerBoundary = [
@@ -523,10 +293,7 @@ export class Screen implements IScreen {
     this.playerY = 600;
   }
 
-  public drawPlayer(
-    dungeon: number,
-    key: string
-  ): [message: string, dungeon: number] {
+  public drawPlayer(): [message: string] {
     const upRightMeowth = document.getElementById(
       'playerUpRight'
     ) as HTMLCanvasElement;
@@ -581,7 +348,7 @@ export class Screen implements IScreen {
       });
     });
 
-    return ['message', dungeon];
+    return ['message'];
   }
 
   public drawDoorNorth() {
@@ -592,73 +359,97 @@ export class Screen implements IScreen {
     const Door = document.getElementById('door') as HTMLCanvasElement;
     this._ctx.drawImage(Door, 350, 700, 50, 50);
   }
-  public drawDoorLeft() {
+  public drawDoorWest() {
     const Door = document.getElementById('door') as HTMLCanvasElement;
     this._ctx.drawImage(Door, 0, 350, 50, 50);
   }
-  public drawDoorRight() {
+  public drawDoorEast() {
     const Door = document.getElementById('door') as HTMLCanvasElement;
     this._ctx.drawImage(Door, 700, 350, 50, 50);
   }
   public drawBlastoise() {
+    const blastoise = ENEMIES[0].attributes;
     const Blastoise = document.getElementById('blastoise') as HTMLCanvasElement;
-    this._ctx.drawImage(Blastoise, 200, 0, 600, 600);
+    this._ctx.drawImage(
+      Blastoise,
+      blastoise.x,
+      blastoise.y,
+      blastoise.height,
+      blastoise.width
+    );
   }
   public drawCharizard() {
+    const charizard = ENEMIES[1].attributes;
     const Charizard = document.getElementById('charizard') as HTMLCanvasElement;
-    this._ctx.drawImage(Charizard, 200, 0, 600, 600);
+    this._ctx.drawImage(
+      Charizard,
+      charizard.x,
+      charizard.y,
+      charizard.height,
+      charizard.width
+    );
   }
   public drawEternatus() {
+    const eternatus = ENEMIES[3].attributes;
     const Eternatus = document.getElementById('eternatus') as HTMLCanvasElement;
-    this._ctx.drawImage(Eternatus, 100, 50, 450, 450);
+    this._ctx.drawImage(
+      Eternatus,
+      eternatus.x,
+      eternatus.y,
+      eternatus.height,
+      eternatus.width
+    );
   }
   public drawVenusaur() {
+    const venusaur = ENEMIES[3].attributes;
     const Venusaur = document.getElementById('venusaur') as HTMLCanvasElement;
-    this._ctx.drawImage(Venusaur, 350, 350, 200, 200);
+    this._ctx.drawImage(
+      Venusaur,
+      venusaur.x,
+      venusaur.y,
+      venusaur.height,
+      venusaur.width
+    );
   }
   public drawSnorlax() {
+    const snorlax = ENEMIES[3].attributes;
     const Snorlax = document.getElementById('snorlax') as HTMLCanvasElement;
-    this._ctx.drawImage(Snorlax, 0, 50, 250, 250);
-    this._ctx.drawImage(Snorlax, 250, 50, 250, 250);
-    this._ctx.drawImage(Snorlax, 500, 50, 250, 250);
+    this._ctx.drawImage(
+      Snorlax,
+      snorlax.x,
+      snorlax.y,
+      snorlax.height,
+      snorlax.width
+    );
   }
   public drawCoin(
+    dungeon: number,
     removeBottomLeft: boolean,
     removeBottomRight: boolean,
     removeCenter: boolean,
     removeTopLeft: boolean,
     removeTopRight: boolean
   ) {
-    this.amulets = [
-      [0, 0],
-      [0, 700],
-      [700, 0],
-      [700, 700],
-      [350, 350],
-    ];
-
-    console.log(this.amulets);
-    if (removeTopLeft === true) {
-      _.remove(this.amulets, (o) => o[0] === 0 && o[1] === 0);
-    }
-    if (removeBottomLeft === true) {
-      _.remove(this.amulets, [0, 700]);
-    }
-    if (removeCenter === true) {
-      _.remove(this.amulets, [350, 350]);
-    }
-    if (removeTopRight === true) {
-      _.remove(this.amulets, [700, 0]);
-    }
-    if (removeBottomRight === true) {
-      _.remove(this.amulets, [700, 700]);
-    }
-
     const Coin = document.getElementById('coin') as HTMLCanvasElement;
-    this.amulets.forEach((each) => {
+    DUNGEONS[dungeon].amulets.forEach((each) => {
       const [x, y] = each;
       this._ctx.drawImage(Coin, x, y, 50, 50);
     });
+    if (removeTopLeft === true) {
+      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 0 && o[1] === 0);
+    }
+    if (removeBottomLeft === true) {
+      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 0 && o[1] === 700);
+    }
+    if (removeCenter === true) {
+      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 350 && o[1] === 350);
+    }
+    if (removeTopRight === true) {
+      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 700 && o[1] === 0);
+    }
+    if (removeBottomRight === true) {
+      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 700 && o[1] === 700);
+    }
   }
 }
 
