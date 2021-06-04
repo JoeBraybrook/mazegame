@@ -1,6 +1,7 @@
 export const BLOCK_SIZE = 50;
 export const XAXIS = 15;
 export const YAXIS = 15;
+
 export const ENEMIES: Array<{
   attributes: {
     name: string;
@@ -14,30 +15,30 @@ export const ENEMIES: Array<{
   {
     attributes: {
       name: 'Blastoise',
-      x: 350,
-      y: 150,
-      height: 300,
-      width: 300,
+      x: 100,
+      y: 0,
+      height: 600,
+      width: 600,
       attackDamage: 100,
     },
   },
   {
     attributes: {
       name: 'charizard',
-      x: 350,
-      y: 150,
-      height: 400,
-      width: 400,
+      x: 250,
+      y: 0,
+      height: 600,
+      width: 600,
       attackDamage: 200,
     },
   },
   {
     attributes: {
       name: 'venusaur',
-      x: 350,
-      y: 150,
-      height: 400,
-      width: 400,
+      x: 100,
+      y: 0,
+      height: 600,
+      width: 600,
       attackDamage: 50,
     },
   },
@@ -61,6 +62,16 @@ export const ENEMIES: Array<{
       attackDamage: 50,
     },
   },
+  {
+    attributes: {
+      name: 'noEnemy',
+      x: 0,
+      y: 0,
+      height: 0,
+      width: 0,
+      attackDamage: 0,
+    },
+  },
 ];
 
 export const DUNGEONS: Array<{
@@ -73,6 +84,13 @@ export const DUNGEONS: Array<{
     hasWestDoor: boolean;
   };
   hasCoins: boolean;
+  coinValue: {
+    TopLeft: number;
+    TopRight: number;
+    Center: number;
+    BottomLeft: number;
+    BottomRight: number;
+  };
   passages: {
     northDungeon: number;
     southDungeon: number;
@@ -85,10 +103,10 @@ export const DUNGEONS: Array<{
     hasVenusaur: boolean;
     hasEternatus: boolean;
     hasSnorlax: boolean;
+    hasNoEnemy: boolean;
   };
 }> = [
   //Dungeon 0
-
   {
     background: '#1abc9c',
     amulets: [
@@ -99,6 +117,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: true,
       hasSouthDoor: false,
@@ -117,11 +142,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 1
   {
-    background: '#1abc9c',
+    background: '#fd9644',
     amulets: [
       [0, 0],
       [0, 700],
@@ -130,6 +156,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: false,
@@ -148,11 +181,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 2
   {
-    background: '#1abc9c',
+    background: '#fed330',
     amulets: [
       [0, 0],
       [0, 700],
@@ -161,6 +195,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: false,
@@ -179,11 +220,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 3
   {
-    background: '#1abc9c',
+    background: '#26de81',
     amulets: [
       [0, 0],
       [0, 700],
@@ -191,7 +233,14 @@ export const DUNGEONS: Array<{
       [700, 700],
       [350, 350],
     ],
-    hasCoins: false,
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: true,
       hasSouthDoor: true,
@@ -210,11 +259,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: true,
+      hasNoEnemy: false,
     },
   },
   //Dungeon 4
   {
-    background: '#1abc9c',
+    background: '#2bcbba',
     amulets: [
       [0, 0],
       [0, 700],
@@ -223,6 +273,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: false,
@@ -241,11 +298,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 5
   {
-    background: '#1abc9c',
+    background: '#eb3b5a',
     amulets: [
       [0, 0],
       [0, 700],
@@ -254,6 +312,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: false,
@@ -272,11 +337,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 6
   {
-    background: '#1abc9c',
+    background: '#8854d0',
     amulets: [
       [0, 0],
       [0, 700],
@@ -284,7 +350,14 @@ export const DUNGEONS: Array<{
       [700, 700],
       [350, 350],
     ],
-    hasCoins: false,
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: true,
       hasSouthDoor: true,
@@ -303,11 +376,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: true,
       hasSnorlax: false,
+      hasNoEnemy: false,
     },
   },
   //Dungeon 7
   {
-    background: '#1abc9c',
+    background: '#f7b731',
     amulets: [
       [0, 0],
       [0, 700],
@@ -316,6 +390,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: false,
@@ -334,11 +415,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 8
   {
-    background: '#1abc9c',
+    background: '#20bf6b',
     amulets: [
       [0, 0],
       [0, 700],
@@ -347,6 +429,13 @@ export const DUNGEONS: Array<{
       [350, 350],
     ],
     hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: false,
@@ -365,11 +454,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 9
   {
-    background: '#1abc9c',
+    background: '#0fb9b1',
     amulets: [
       [0, 0],
       [0, 700],
@@ -377,7 +467,14 @@ export const DUNGEONS: Array<{
       [700, 700],
       [350, 350],
     ],
-    hasCoins: false,
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: true,
       hasSouthDoor: true,
@@ -396,11 +493,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
   //Dungeon 10
   {
-    background: '#1abc9c',
+    background: '#45aaf2',
     amulets: [
       [0, 0],
       [0, 700],
@@ -408,12 +506,19 @@ export const DUNGEONS: Array<{
       [700, 700],
       [350, 350],
     ],
-    hasCoins: false,
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
-      hasNorthDoor: true,
+      hasNorthDoor: false,
       hasSouthDoor: false,
       hasEastDoor: true,
-      hasWestDoor: true,
+      hasWestDoor: false,
     },
     passages: {
       northDungeon: 0,
@@ -427,11 +532,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: false,
     },
   },
   //Dungeon 11
   {
-    background: '#1abc9c',
+    background: '#eb3b5a',
     amulets: [
       [0, 0],
       [0, 700],
@@ -439,9 +545,16 @@ export const DUNGEONS: Array<{
       [700, 700],
       [350, 350],
     ],
-    hasCoins: false,
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
-      hasNorthDoor: true,
+      hasNorthDoor: false,
       hasSouthDoor: false,
       hasEastDoor: true,
       hasWestDoor: true,
@@ -449,7 +562,7 @@ export const DUNGEONS: Array<{
     passages: {
       northDungeon: 0,
       southDungeon: 8,
-      eastDungeon: 0,
+      eastDungeon: 13,
       westDungeon: 9,
     },
     threats: {
@@ -458,11 +571,12 @@ export const DUNGEONS: Array<{
       hasVenusaur: false,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: false,
     },
   },
   //Dungeon 12
   {
-    background: '#1abc9c',
+    background: '#20bf6b',
     amulets: [
       [0, 0],
       [0, 700],
@@ -470,7 +584,14 @@ export const DUNGEONS: Array<{
       [700, 700],
       [350, 350],
     ],
-    hasCoins: false,
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
     doors: {
       hasNorthDoor: false,
       hasSouthDoor: true,
@@ -489,6 +610,46 @@ export const DUNGEONS: Array<{
       hasVenusaur: true,
       hasEternatus: false,
       hasSnorlax: false,
+      hasNoEnemy: false,
+    },
+  },
+  //Dungeon 13
+  {
+    background: '#a5b1c2',
+    amulets: [
+      [0, 0],
+      [0, 700],
+      [700, 0],
+      [700, 700],
+      [350, 350],
+    ],
+    hasCoins: true,
+    coinValue: {
+      TopLeft: 100,
+      TopRight: 100,
+      Center: 100,
+      BottomLeft: 100,
+      BottomRight: 100,
+    },
+    doors: {
+      hasNorthDoor: false,
+      hasSouthDoor: false,
+      hasEastDoor: false,
+      hasWestDoor: true,
+    },
+    passages: {
+      northDungeon: 0,
+      southDungeon: 0,
+      eastDungeon: 0,
+      westDungeon: 11,
+    },
+    threats: {
+      hasBlastoise: false,
+      hasCharizard: false,
+      hasVenusaur: false,
+      hasEternatus: false,
+      hasSnorlax: false,
+      hasNoEnemy: true,
     },
   },
 ];

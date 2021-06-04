@@ -11,13 +11,9 @@ import * as _ from 'lodash';
 export interface IScreen {
   playerX: number;
   playerY: number;
-  removeTopLeft: boolean;
-  removeTopRight: boolean;
-  removeCenter: boolean;
-  removeBottomLeft: boolean;
-  removeBottomRight: boolean;
   drawPlayer: () => [message: string];
   drawScreen: (dungeon: number) => void;
+  drawCoin: (dungeon: number) => void;
 
   key: string;
 }
@@ -37,12 +33,7 @@ export class GameComponent {
   public gameStart: boolean = false;
   public gameOver: boolean = false;
   public screen: IScreen;
-  public removeTopLeft: boolean = false;
-  public removeTopRight: boolean = false;
-  public removeCenter: boolean = false;
-  public removeBottomLeft: boolean = false;
-  public removeBottomRight: boolean = false;
-
+  public whosThat: number;
   @ViewChild('screen', { static: true })
   public set canvas(ele: ElementRef<HTMLCanvasElement>) {
     if (ele) {
@@ -61,6 +52,11 @@ export class GameComponent {
       console.log(this.dungeon);
       console.log(this.screen.playerX);
       console.log(this.screen.playerY);
+      this._enemyCollisionCheck(
+        this.dungeon,
+        this.screen.playerX,
+        this.screen.playerY
+      );
       this._amuletCollectionCheck(
         this.dungeon,
         this.screen.playerX,
@@ -110,21 +106,70 @@ export class GameComponent {
   ) {
     if (DUNGEONS[dungeon].hasCoins) {
       if (playerX === 0 && playerY === 0) {
-        this.screen.removeTopLeft = true;
-        this.wealth += 100;
+        this.wealth += DUNGEONS[dungeon].coinValue.TopLeft;
+        _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 0 && o[1] === 0);
+        DUNGEONS[dungeon].coinValue.TopLeft = 0;
       } else if (playerX === 0 && playerY === 700) {
-        this.screen.removeBottomLeft = true;
-        this.wealth += 100;
+        this.wealth += DUNGEONS[dungeon].coinValue.BottomLeft;
+        _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 0 && o[1] === 700);
+        DUNGEONS[dungeon].coinValue.BottomLeft = 0;
       } else if (playerX === 350 && playerY === 350) {
-        this.screen.removeCenter = true;
-        this.wealth += 100;
+        this.wealth += DUNGEONS[dungeon].coinValue.Center;
+        _.remove(
+          DUNGEONS[dungeon].amulets,
+          (o) => o[0] === 350 && o[1] === 350
+        );
+        DUNGEONS[dungeon].coinValue.Center = 0;
+        this.screen.drawCoin(dungeon);
       } else if (playerX === 700 && playerY === 0) {
-        this.screen.removeTopRight = true;
-        this.wealth += 100;
+        this.wealth += DUNGEONS[dungeon].coinValue.TopRight;
+        _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 700 && o[1] === 0);
+        DUNGEONS[dungeon].coinValue.TopRight = 0;
       } else if (playerX === 700 && playerY === 700) {
-        this.screen.removeBottomRight = true;
-        this.wealth += 100;
+        this.wealth += DUNGEONS[dungeon].coinValue.BottomRight;
+        _.remove(
+          DUNGEONS[dungeon].amulets,
+          (o) => o[0] === 700 && o[1] === 700
+        );
+        DUNGEONS[dungeon].coinValue.BottomRight = 0;
       }
+    }
+  }
+  private _enemyCollisionCheck(
+    dungeon: number,
+    playerX: number,
+    playerY: number
+  ) {
+    if (DUNGEONS[dungeon].threats.hasBlastoise === true) {
+      this.whosThat = 0;
+    }
+    if (DUNGEONS[dungeon].threats.hasCharizard === true) {
+      this.whosThat = 1;
+    }
+    if (DUNGEONS[dungeon].threats.hasVenusaur === true) {
+      this.whosThat = 2;
+    }
+    if (DUNGEONS[dungeon].threats.hasEternatus === true) {
+      this.whosThat = 3;
+    }
+    if (DUNGEONS[dungeon].threats.hasSnorlax === true) {
+      this.whosThat = 4;
+    }
+    if (DUNGEONS[dungeon].threats.hasNoEnemy === true) {
+      this.whosThat = 5;
+    }
+
+    if (
+      (playerX >= ENEMIES[this.whosThat].attributes.x ||
+        playerX <=
+          ENEMIES[this.whosThat].attributes.x +
+            ENEMIES[this.whosThat].attributes.width) &&
+      (playerY >= ENEMIES[this.whosThat].attributes.y ||
+        playerY <=
+          ENEMIES[this.whosThat].attributes.y +
+            ENEMIES[this.whosThat].attributes.height)
+    ) {
+      this.wealth -= ENEMIES[this.whosThat].attributes.attackDamage;
     }
   }
 
@@ -142,7 +187,6 @@ export class GameComponent {
       this.dungeon = DUNGEONS[dungeon].passages.northDungeon;
       this.screen.playerX = 350;
       this.screen.playerY = 650;
-      this._cleanSlateCoins();
     }
     // West Door
     if (
@@ -153,7 +197,6 @@ export class GameComponent {
       this.dungeon = DUNGEONS[dungeon].passages.westDungeon;
       this.screen.playerX = 650;
       this.screen.playerY = 350;
-      this._cleanSlateCoins();
     }
     // East Door
     if (
@@ -162,9 +205,9 @@ export class GameComponent {
       playerY === 350
     ) {
       this.dungeon = DUNGEONS[dungeon].passages.eastDungeon;
+
       this.screen.playerX = 50;
       this.screen.playerY = 350;
-      this._cleanSlateCoins();
     }
     // South Door
     if (
@@ -175,7 +218,6 @@ export class GameComponent {
       this.dungeon = DUNGEONS[dungeon].passages.southDungeon;
       this.screen.playerX = 350;
       this.screen.playerY = 50;
-      this._cleanSlateCoins();
     }
     return this.dungeon;
   }
@@ -187,18 +229,10 @@ export class GameComponent {
     this._ctx.canvas.width = XAXIS * BLOCK_SIZE;
   }
 
-  private _cleanSlateCoins() {
-    this.screen.removeTopLeft = false;
-    this.screen.removeTopRight = false;
-    this.screen.removeCenter = false;
-    this.screen.removeBottomLeft = false;
-    this.screen.removeBottomRight = false;
-  }
-
   public newGame(): void {
     // Begin a brand new game
     this.gameStart = true;
-    this.dungeon = 0;
+    this.dungeon = Math.floor(Math.random() * 6);
     this.wealth = 0;
     this.screen = new Screen(this._ctx);
     this.screen.drawScreen(this.dungeon);
@@ -207,7 +241,7 @@ export class GameComponent {
   public reset(): void {
     delete this.screen;
     this.gameOver = false;
-    this.dungeon = 1;
+    this.dungeon = Math.floor(Math.random() * 6);
     this.message = `Welcome to pixel hell`;
     this.gameStart = true;
     this.screen = new Screen(this._ctx);
@@ -226,14 +260,6 @@ export class Screen implements IScreen {
   public charizardKey: boolean = false;
   public venusaurKey: boolean = false;
   public amulets: [number, number][] = [];
-  public coinX: number;
-  public coinY: number;
-  public removeTopLeft: boolean = false;
-  public removeTopRight: boolean = false;
-  public removeCenter: boolean = false;
-  public removeBottomLeft: boolean = false;
-  public removeBottomRight: boolean = false;
-
   constructor(private _ctx: CanvasRenderingContext2D) {
     this._createPlayer();
   }
@@ -255,14 +281,7 @@ export class Screen implements IScreen {
       this.drawDoorWest();
     }
     if (DUNGEONS[dungeon].hasCoins) {
-      this.drawCoin(
-        dungeon,
-        this.removeBottomLeft,
-        this.removeBottomRight,
-        this.removeCenter,
-        this.removeTopLeft,
-        this.removeTopRight
-      );
+      this.drawCoin(dungeon);
     }
     if (DUNGEONS[dungeon].threats.hasBlastoise) {
       this.drawBlastoise();
@@ -279,6 +298,7 @@ export class Screen implements IScreen {
     if (DUNGEONS[dungeon].threats.hasSnorlax) {
       this.drawSnorlax();
     }
+    this.drawCoin(dungeon);
     this.drawPlayer();
   }
 
@@ -401,7 +421,7 @@ export class Screen implements IScreen {
     );
   }
   public drawVenusaur() {
-    const venusaur = ENEMIES[3].attributes;
+    const venusaur = ENEMIES[2].attributes;
     const Venusaur = document.getElementById('venusaur') as HTMLCanvasElement;
     this._ctx.drawImage(
       Venusaur,
@@ -412,7 +432,7 @@ export class Screen implements IScreen {
     );
   }
   public drawSnorlax() {
-    const snorlax = ENEMIES[3].attributes;
+    const snorlax = ENEMIES[4].attributes;
     const Snorlax = document.getElementById('snorlax') as HTMLCanvasElement;
     this._ctx.drawImage(
       Snorlax,
@@ -422,34 +442,12 @@ export class Screen implements IScreen {
       snorlax.width
     );
   }
-  public drawCoin(
-    dungeon: number,
-    removeBottomLeft: boolean,
-    removeBottomRight: boolean,
-    removeCenter: boolean,
-    removeTopLeft: boolean,
-    removeTopRight: boolean
-  ) {
+  public drawCoin(dungeon: number) {
     const Coin = document.getElementById('coin') as HTMLCanvasElement;
     DUNGEONS[dungeon].amulets.forEach((each) => {
       const [x, y] = each;
       this._ctx.drawImage(Coin, x, y, 50, 50);
     });
-    if (removeTopLeft === true) {
-      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 0 && o[1] === 0);
-    }
-    if (removeBottomLeft === true) {
-      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 0 && o[1] === 700);
-    }
-    if (removeCenter === true) {
-      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 350 && o[1] === 350);
-    }
-    if (removeTopRight === true) {
-      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 700 && o[1] === 0);
-    }
-    if (removeBottomRight === true) {
-      _.remove(DUNGEONS[dungeon].amulets, (o) => o[0] === 700 && o[1] === 700);
-    }
   }
 }
 
